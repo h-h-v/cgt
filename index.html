@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Generation Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #output {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Code Generation Tool</h1>
+    <label for="description">Enter your natural language description:</label>
+    <textarea id="description" placeholder="Describe the code snippet you want to generate..."></textarea>
+    <button onclick="generateCode()">Generate Code</button>
+    <div id="output">
+        <h2>Generated Code:</h2>
+        <pre id="generatedCode"></pre>
+    </div>
+
+    <script>
+        function generateCode() {
+            var description = document.getElementById('description').value;
+            var data = {
+                prompt: description,
+                max_tokens: 100,
+                n: 1,
+                stop: ["\n"]
+            };
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "https://api.openai.com/v1/gpt-3.5-turbo/completions", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader("Authorization", "Bearer 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");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    var generatedCode = response.choices[0].text.trim();
+                    document.getElementById("generatedCode").innerText = generatedCode;
+                }
+            };
+            xhr.send(JSON.stringify(data));
+        }
+    </script>
+</body>
+</html>
